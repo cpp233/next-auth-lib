@@ -38,3 +38,6 @@ next-env.d.ts
 
 # sqlite
 /prisma/db.db
+
+# misc
+/_misc

@@ -25,7 +25,7 @@ const LoginForm = () => {
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
-      passwork: '',
+      password: '',
     },
   });
   const [isPending, startTransition] = useTransition();
@@ -74,7 +74,7 @@ const LoginForm = () => {
             ></FormField>
             <FormField
               control={form.control}
-              name='passwork'
+              name='password'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>密码</FormLabel>
@@ -82,7 +82,7 @@ const LoginForm = () => {
                     <Input
                       {...field}
                       // placeholder='******'
-                      type='passwork'
+                      type='password'
                       disabled={isPending}
                     ></Input>
                   </FormControl>

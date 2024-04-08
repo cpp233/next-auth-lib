@@ -25,7 +25,7 @@ const RegisterForm = () => {
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: '',
-      passwork: '',
+      password: '',
       name: '',
     },
   });
@@ -65,7 +65,7 @@ const RegisterForm = () => {
                     <Input
                       {...field}
                       placeholder='请输入昵称'
-                      type='passwork'
+                      type='text'
                       disabled={isPending}
                     ></Input>
                   </FormControl>
@@ -93,7 +93,7 @@ const RegisterForm = () => {
             ></FormField>
             <FormField
               control={form.control}
-              name='passwork'
+              name='password'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>密码</FormLabel>
@@ -101,7 +101,7 @@ const RegisterForm = () => {
                     <Input
                       {...field}
                       // placeholder='******'
-                      type='passwork'
+                      type='password'
                       disabled={isPending}
                     ></Input>
                   </FormControl>
