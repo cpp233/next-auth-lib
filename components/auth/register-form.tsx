@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState, useTransition } from 'react';
 
-import { LoginSchema } from '@/schemas';
+import { RegisterSchema } from '@/schemas';
 import CardWrapper from '@/components/auth/card-wrapper';
 import {
   Form,
@@ -18,26 +18,27 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { login } from '@/actions/login';
+import { register } from '@/actions/register';
 
-const LoginForm = () => {
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+const RegisterForm = () => {
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: '',
       passwork: '',
+      name: '',
     },
   });
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     // console.log(values);
     setError('');
     setSuccess('');
     startTransition(() => {
-      login(values).then(data => {
+      register(values).then(data => {
         const { type, message } = data;
         type === 'error' ? setError(message) : setSuccess(message);
       });
@@ -46,14 +47,32 @@ const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel='欢迎回来'
-      backButtonLabel='没有账号？'
-      backButtonHref='/auth/register'
+      headerLabel='注册账号'
+      backButtonLabel='已经有了账号？'
+      backButtonHref='/auth/login'
       showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
           <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>昵称</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder='请输入昵称'
+                      type='passwork'
+                      disabled={isPending}
+                    ></Input>
+                  </FormControl>
+                  <FormMessage></FormMessage>
+                </FormItem>
+              )}
+            ></FormField>
             <FormField
               control={form.control}
               name='email'
@@ -95,7 +114,7 @@ const LoginForm = () => {
           <FormError message={error}></FormError>
           <FormSuccess message={success}></FormSuccess>
           <Button type='submit' className='w-full' disabled={isPending}>
-            登录
+            创建账号
           </Button>
         </form>
       </Form>
@@ -103,4 +122,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
