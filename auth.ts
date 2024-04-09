@@ -31,7 +31,7 @@ export const {
   callbacks: {
     // 登陆守护
     async signIn({ user, account }) {
-      // console.log('[signIn]', user);
+      // console.log('[signIn]', user, account);
 
       // OAuth 账号通过
       if (account?.provider !== 'credentials') {

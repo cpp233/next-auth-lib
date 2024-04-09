@@ -31,9 +31,9 @@ export const login = async (
 
   // 这里也加一个邮件验证判定，防止失效。
   if (!existingUser.emailVerified) {
-    // const verificationToken = await generateVerificationTokenByToken(
-    //   existingUser.email
-    // );
+    const verificationToken = await generateVerificationTokenByToken(
+      existingUser.email
+    );
     // await sendVerificationEmail(
     //   verificationToken.email,
     //   verificationToken.token

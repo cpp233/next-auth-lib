@@ -2,7 +2,7 @@
  * 公共页面
  * @type {string[]}
  */
-export const publicRoutes = ['/', '/test-public'];
+export const publicRoutes = ['/', '/test-public', '/auth/new-verification'];
 
 /**
  * 用来登录注册的页面
