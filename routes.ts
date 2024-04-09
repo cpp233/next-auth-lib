@@ -8,7 +8,7 @@ export const publicRoutes = ['/', '/test-public'];
  * 用来登录注册的页面
  * @type {string[]}
  */
-export const authRoutes = ['/auth/login', '/auth/register'];
+export const authRoutes = ['/auth/login', '/auth/register', '/auth/error'];
 
 /**
  * 用来登录注册的 api 接口

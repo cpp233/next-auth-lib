@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { login } from '@/actions/login';
+import { useSearchParams } from 'next/navigation';
 
 const LoginForm = () => {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -32,6 +33,15 @@ const LoginForm = () => {
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
 
+  const searchParams = useSearchParams();
+
+  // https://authjs.dev/concepts/faq
+  // When I sign in with another account with the same email address, why are accounts not linked automatically?
+  const urlError =
+    searchParams?.get('error') === 'OAuthAccountNotLinked'
+      ? '该邮件已经注册过！'
+      : '';
+
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     // console.log(values);
     setError('');
@@ -44,6 +54,8 @@ const LoginForm = () => {
         const { type, message } = data;
         type === 'error' ? setError(message) : setSuccess(message);
       });
+
+      // TODO: 2FA
     });
   };
 
@@ -95,7 +107,7 @@ const LoginForm = () => {
             ></FormField>
           </div>
           {/*  */}
-          <FormError message={error}></FormError>
+          <FormError message={error || urlError}></FormError>
           <FormSuccess message={success}></FormSuccess>
           <Button type='submit' className='w-full' disabled={isPending}>
             登录

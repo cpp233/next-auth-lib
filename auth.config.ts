@@ -1,14 +1,28 @@
-// import GitHub from 'next-auth/providers/github';
+import GitHub from 'next-auth/providers/github';
+import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 import type { NextAuthConfig } from 'next-auth';
 import bcrypt from 'bcryptjs';
 
 import { LoginSchema } from '@/schemas';
 import { getUserByEmail } from '@/data/user';
+import {
+  GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+} from '@/lib/getEnv';
 
 export default {
   providers: [
-    // GitHub,
+    GitHub({
+      clientId: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+    }),
+    Google({
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+    }),
     Credentials({
       async authorize(credentials, _req) {
         const validatedFields = LoginSchema.safeParse(credentials);
