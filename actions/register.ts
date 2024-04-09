@@ -7,6 +7,8 @@ import bcrypt from 'bcryptjs';
 import { RegisterSchema } from '@/schemas';
 import { db } from '@/lib/db';
 import { getUserByEmail } from '@/data/user';
+import { generateVerificationTokenByToken } from '@/data/tokens';
+import { sendVerificationEmail } from '@/lib/mail';
 
 export const register = async (
   values: z.infer<typeof RegisterSchema>
@@ -24,12 +26,14 @@ export const register = async (
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
+    // TODO: 倒计时
     return {
       type: 'error',
-      message: '邮箱已注册',
+      message: '该邮箱已注册',
     };
   }
 
+  // 创建用户，但是待验证
   await db.user.create({
     data: {
       name,
@@ -38,10 +42,13 @@ export const register = async (
     },
   });
 
-  // TODO: 邮箱验证
+  // 生成验证，用户验证后可登录
+  const verificationToken = await generateVerificationTokenByToken(email);
+
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
   return {
     type: 'success',
-    message: '创建成功',
+    message: '邮件已发送',
   };
 };

@@ -2,13 +2,18 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { AuthError } from 'next-auth';
 
 import { LoginSchema } from '@/schemas';
 import { signIn } from '@/auth';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
-import { AuthError } from 'next-auth';
+import { getUserByEmail } from '@/data/user';
+import { generateVerificationTokenByToken } from '@/data/tokens';
+import { sendVerificationEmail } from '@/lib/mail';
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  values: z.infer<typeof LoginSchema>
+): Promise<{ type: 'success' | 'error'; message: string }> => {
   // console.log(values);
   const validationSchema = LoginSchema.safeParse(values);
 
@@ -17,6 +22,25 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   const { email, password } = validationSchema.data;
+
+  const existingUser = await getUserByEmail(email);
+
+  if (!existingUser || !existingUser.email || !existingUser.password) {
+    return { type: 'error', message: '无效用户' };
+  }
+
+  // 这里也加一个邮件验证判定，防止失效。
+  if (!existingUser.emailVerified) {
+    // const verificationToken = await generateVerificationTokenByToken(
+    //   existingUser.email
+    // );
+    // await sendVerificationEmail(
+    //   verificationToken.email,
+    //   verificationToken.token
+    // );
+
+    return { type: 'success', message: '邮件已发送，请在您的邮箱验证确认邮件' };
+  }
 
   try {
     await signIn('credentials', {

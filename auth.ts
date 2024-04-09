@@ -29,19 +29,29 @@ export const {
     },
   },
   callbacks: {
-    // async signIn({ user }) {
-    //   // console.log('[signIn]', user);
-    //   return true;
-    //   if (!user.id) {
-    //     return false;
-    //   }
+    // 登陆守护
+    async signIn({ user, account }) {
+      // console.log('[signIn]', user);
 
-    //   const existingUser = await getUserById(user.id);
-    //   if (!existingUser || !existingUser?.emailVerified) {
-    //     return false;
-    //   }
-    //   return true;
-    // },
+      // OAuth 账号通过
+      if (account?.provider !== 'credentials') {
+        return true;
+      }
+
+      if (!user || !user.id) {
+        return false;
+      }
+
+      // 防止未验证邮箱登陆
+      const existingUser = await getUserById(user.id);
+      if (!existingUser?.emailVerified) {
+        return false;
+      }
+
+      // TODO: 2FA
+
+      return true;
+    },
     async session({ session, token }) {
       // console.log('[session]', session, token);
       if (token.sub && session.user) {
