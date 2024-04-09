@@ -7,6 +7,8 @@ import { db } from '@/lib/db';
 export const {
   handlers: { GET, POST },
   auth,
+  signIn,
+  signOut,
 } = NextAuth({
   // 兼容 prisma 的 edge
   adapter: PrismaAdapter(db),

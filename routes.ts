@@ -20,4 +20,4 @@ export const apiAuthPrefix = '/api/auth';
  * 登录后重定向的路由
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = '/home';
+export const DEFAULT_LOGIN_REDIRECT = '/settings';
