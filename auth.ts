@@ -81,6 +81,10 @@ export const {
         session.user.role = token.role;
       }
 
+      if (token.sub && session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
+      }
+
       return session;
     },
     async jwt({ token }) {
@@ -98,6 +102,7 @@ export const {
       }
 
       token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       return token;
     },
   },
