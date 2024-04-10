@@ -45,7 +45,7 @@ export const register = async (
   // 生成验证，用户验证后可登录
   const verificationToken = await generateVerificationToken(email);
 
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+  // await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
   return {
     type: 'success',

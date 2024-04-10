@@ -34,6 +34,7 @@ const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
+  const [show2FA, setShow2FA] = useState<boolean>(false);
 
   const searchParams = useSearchParams();
 
@@ -49,15 +50,32 @@ const LoginForm = () => {
     setError('');
     setSuccess('');
     startTransition(() => {
-      login(values).then(data => {
-        if (!data) {
-          return;
-        }
-        const { type, message } = data;
-        type === 'error' ? setError(message) : setSuccess(message);
-      });
+      login(values)
+        .then(data => {
+          if (!data) {
+            return;
+          }
+          const { type, message } = data;
+          // type === 'error' ?  : setSuccess(message);
 
-      // TODO: 2FA
+          if (type === 'error') {
+            form.reset();
+            setError(message);
+          }
+
+          if (type === 'success') {
+            form.reset();
+            setSuccess(message);
+          }
+
+          // 2FA
+          if (type === '2FA') {
+            setShow2FA(true);
+          }
+        })
+        .catch(err => {
+          setError('登录失败，请稍后再试！');
+        });
     });
   };
 
@@ -71,52 +89,76 @@ const LoginForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
           <div className='space-y-4'>
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>邮箱</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='test@exaple.com'
-                      type='email'
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage></FormMessage>
-                </FormItem>
-              )}
-            ></FormField>
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>密码</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      // placeholder='******'
-                      type='password'
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage></FormMessage>
-                  {/*  */}
-                  <Button size='sm' variant='link' asChild>
-                    <Link href={ROUTE_AUTH_RESET}>忘记密码？</Link>
-                  </Button>
-                </FormItem>
-              )}
-            ></FormField>
+            {!show2FA && (
+              <>
+                <FormField
+                  control={form.control}
+                  name='email'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>邮箱：</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder='test@exaple.com'
+                          type='email'
+                          disabled={isPending}
+                        ></Input>
+                      </FormControl>
+                      <FormMessage></FormMessage>
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name='password'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>密码：</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          // placeholder='******'
+                          type='password'
+                          disabled={isPending}
+                        ></Input>
+                      </FormControl>
+                      <FormMessage></FormMessage>
+                      {/*  */}
+                      <Button size='sm' variant='link' asChild>
+                        <Link href={ROUTE_AUTH_RESET}>忘记密码？</Link>
+                      </Button>
+                    </FormItem>
+                  )}
+                ></FormField>
+              </>
+            )}
+            {show2FA && (
+              <FormField
+                control={form.control}
+                name='code2FA'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>2FA 验证码：</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        // placeholder='******'
+                        // type=''
+                        disabled={isPending}
+                      ></Input>
+                    </FormControl>
+                    <FormMessage></FormMessage>
+                  </FormItem>
+                )}
+              ></FormField>
+            )}
           </div>
           {/*  */}
           <FormError message={error || urlError}></FormError>
           <FormSuccess message={success}></FormSuccess>
           <Button type='submit' className='w-full' disabled={isPending}>
-            登录
+            {show2FA ? '验证' : '登录'}
           </Button>
         </form>
       </Form>

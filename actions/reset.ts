@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { ResetSchema } from '@/schemas';
 import { getUserByEmail } from '@/data/user';
 import { generatePasswordResetToken } from '@/lib/tokens';
-import { sendePasswordResetEmail } from '@/lib/mail';
+import { sendPasswordResetEmail } from '@/lib/mail';
 
 export const reset = async (
   values: z.infer<typeof ResetSchema>
@@ -25,10 +25,10 @@ export const reset = async (
   }
 
   const passwordResetToken = await generatePasswordResetToken(email);
-  await sendePasswordResetEmail(
-    passwordResetToken.email,
-    passwordResetToken.token
-  );
+  // await sendPasswordResetEmail(
+  //   passwordResetToken.email,
+  //   passwordResetToken.token
+  // );
 
   return { type: 'success', message: '邮件已发送' };
 };

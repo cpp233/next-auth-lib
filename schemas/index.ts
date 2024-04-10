@@ -5,6 +5,7 @@ export const LoginSchema = z.object({
     message: '请输入有效的电子邮件地址',
   }),
   password: z.string().min(1, { message: '密码不能为空' }),
+  code2FA: z.optional(z.string()),
 });
 
 export const RegisterSchema = z.object({

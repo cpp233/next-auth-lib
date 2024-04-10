@@ -6,6 +6,7 @@ import { db } from '@/lib/db';
 import { getUserById } from './data/user';
 import { UserRole } from '@prisma/client';
 import { ROUTE_AUTH_ERROR, ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
+import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
 
 export const {
   handlers: { GET, POST },
@@ -49,7 +50,24 @@ export const {
         return false;
       }
 
-      // TODO: 2FA
+      // 2FA 守护
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existingUser.id
+        );
+
+        if (!twoFactorConfirmation) {
+          return false;
+        }
+
+        // 删除 2FA 防止下次登录
+        // TODO: 设置过期时间
+        await db.twoFactorConfirmation.delete({
+          where: {
+            id: twoFactorConfirmation.id,
+          },
+        });
+      }
 
       return true;
     },

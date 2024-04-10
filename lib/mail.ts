@@ -26,7 +26,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   });
 };
 
-export const sendePasswordResetEmail = async (email: string, token: string) => {
+export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `http://localhost:${process.env.PORT}${ROUTE_AUTH_NEW_PASSWORK}?token=${token}`;
 
   await resend.emails.send({
@@ -35,5 +35,14 @@ export const sendePasswordResetEmail = async (email: string, token: string) => {
     subject: '重置密码',
     html: `<p>点击<a href="${resetLink}">这里</a>重置你的密码。</p>
     `,
+  });
+};
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  await resend.emails.send({
+    from: 'Acme <onboarding@resend.dev>',
+    to: email,
+    subject: '2FA 验证码',
+    html: `<p>您的 2FA 验证码为： ${token} 。</p>`,
   });
 };
