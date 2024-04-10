@@ -52,7 +52,7 @@ export const login = async (
   // 2FA 验证
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (!code2FA) {
-      // const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
       // await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
       return {
