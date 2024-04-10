@@ -20,3 +20,7 @@ export const ResetSchema = z.object({
     message: '请输入有效的电子邮件地址',
   }),
 });
+
+export const NewPasswordSchema = z.object({
+  password: z.string().min(6, { message: '密码长度至少为6' }),
+});
