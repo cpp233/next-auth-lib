@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { register } from '@/actions/register';
+import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
 const RegisterForm = () => {
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -49,7 +50,7 @@ const RegisterForm = () => {
     <CardWrapper
       headerLabel='注册账号'
       backButtonLabel='已经有了账号？'
-      backButtonHref='/auth/login'
+      backButtonHref={ROUTE_AUTH_LOGIN}
       showSocial
     >
       <Form {...form}>

@@ -5,6 +5,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/db';
 import { getUserById } from './data/user';
 import { UserRole } from '@prisma/client';
+import { ROUTE_AUTH_ERROR, ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
 export const {
   handlers: { GET, POST },
@@ -13,8 +14,8 @@ export const {
   signOut,
 } = NextAuth({
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error', // 错误路由
+    signIn: ROUTE_AUTH_LOGIN,
+    error: ROUTE_AUTH_ERROR, // 用来处理错误的路由
   },
   events: {
     async linkAccount({ user }) {

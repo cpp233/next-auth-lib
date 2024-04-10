@@ -7,6 +7,7 @@ import CardWrapper from '@/components/auth/card-wrapper';
 import { newVerification } from '@/actions/new-verification';
 import { FormSuccess } from '@/components/form-success';
 import { FormError } from '@/components/form-error';
+import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
 function NewVerificationForm() {
   const [error, setError] = useState<string | undefined>('');
@@ -48,7 +49,7 @@ function NewVerificationForm() {
     <CardWrapper
       headerLabel='正在确认验证码'
       backButtonLabel='返回登录'
-      backButtonHref='/auth/login'
+      backButtonHref={ROUTE_AUTH_LOGIN}
     >
       <div className='flex item-center justify-center'>
         {!error && !success && <BeatLoader></BeatLoader>}

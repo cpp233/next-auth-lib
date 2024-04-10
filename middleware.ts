@@ -10,6 +10,7 @@ import {
   authRoutes,
   publicRoutes,
 } from '@/routes';
+import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
 export default auth(req => {
   const { nextUrl } = req;
@@ -32,7 +33,7 @@ export default auth(req => {
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL('/auth/login', nextUrl));
+    return Response.redirect(new URL(ROUTE_AUTH_LOGIN, nextUrl));
   }
 
   // console.log('[Middleware] pathname:', req.nextUrl.pathname);

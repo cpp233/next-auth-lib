@@ -1,5 +1,6 @@
 'use client';
 
+import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 import { useRouter } from 'next/navigation';
 
 interface LoginButtonProps {
@@ -16,7 +17,7 @@ const LoginButton = ({
   const router = useRouter();
 
   const onClick = () => {
-    router.push('/auth/login');
+    router.push(ROUTE_AUTH_LOGIN);
   };
 
   if (mode === 'modal') {

@@ -20,6 +20,8 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { login } from '@/actions/login';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { ROUTE_AUTH_REGISTER } from '@/lib/getEnv';
 
 const LoginForm = () => {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -63,7 +65,7 @@ const LoginForm = () => {
     <CardWrapper
       headerLabel='欢迎回来'
       backButtonLabel='没有账号？'
-      backButtonHref='/auth/register'
+      backButtonHref={ROUTE_AUTH_REGISTER}
       showSocial
     >
       <Form {...form}>
@@ -102,6 +104,10 @@ const LoginForm = () => {
                     ></Input>
                   </FormControl>
                   <FormMessage></FormMessage>
+                  {/*  */}
+                  <Button size='sm' variant='link' asChild>
+                    <Link href='/auth/reset'>忘记密码？</Link>
+                  </Button>
                 </FormItem>
               )}
             ></FormField>
