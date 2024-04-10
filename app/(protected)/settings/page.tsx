@@ -1,23 +1,11 @@
 'use client';
-import { useSession, signOut } from 'next-auth/react';
 
-import { Button } from '@/components/ui/button';
+import { useCurUser } from '@/hooks/use-current-user';
 
 const SettingsPage = () => {
-  const session = useSession();
+  const user = useCurUser();
 
-  const onClick = () => {
-    signOut();
-  };
-
-  return (
-    <div>
-      {JSON.stringify(session)}
-      <Button type='submit' onClick={onClick}>
-        点我退出
-      </Button>
-    </div>
-  );
+  return <div className='bg-white p-10 rounded-xl'>{JSON.stringify(user)}</div>;
 };
 
 export default SettingsPage;

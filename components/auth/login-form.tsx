@@ -29,6 +29,7 @@ const LoginForm = () => {
     defaultValues: {
       email: '',
       password: '',
+      code2FA: '',
     },
   });
   const [isPending, startTransition] = useTransition();
