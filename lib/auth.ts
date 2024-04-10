@@ -5,3 +5,9 @@ export const curUser = async () => {
 
   return session?.user;
 };
+
+export const curRole = async () => {
+  const session = await auth();
+
+  return session?.user.role;
+};
