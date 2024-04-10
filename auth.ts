@@ -7,6 +7,7 @@ import { getUserById } from './data/user';
 import { UserRole } from '@prisma/client';
 import { ROUTE_AUTH_ERROR, ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
+import { getAccountByUserid } from './data/account';
 
 export const {
   handlers: { GET, POST },
@@ -85,6 +86,15 @@ export const {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
       }
 
+      // 更改设置后更新 session 信息
+      if (session.user) {
+        session.user.name = token.name;
+        if (token.email) {
+          session.user.email = token.email;
+        }
+        session.user.isOAuth = token.isOAuth;
+      }
+
       return session;
     },
     async jwt({ token }) {
@@ -101,8 +111,16 @@ export const {
         return token;
       }
 
+      // 防止非邮箱账户意外修改
+      const existingAccount = await getAccountByUserid(existingUser.id);
+
+      token.isOAuth = !!existingAccount;
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+
       return token;
     },
   },
