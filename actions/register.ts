@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import { RegisterSchema } from '@/schemas';
 import { db } from '@/lib/db';
 import { getUserByEmail } from '@/data/user';
-import { generateVerificationTokenByToken } from '@/data/tokens';
+import { generateVerificationToken } from '@/lib/tokens';
 import { sendVerificationEmail } from '@/lib/mail';
 
 export const register = async (
@@ -43,7 +43,7 @@ export const register = async (
   });
 
   // 生成验证，用户验证后可登录
-  const verificationToken = await generateVerificationTokenByToken(email);
+  const verificationToken = await generateVerificationToken(email);
 
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 

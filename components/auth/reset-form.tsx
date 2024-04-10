@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState, useTransition } from 'react';
 
-import { LoginSchema } from '@/schemas';
+import { ResetSchema } from '@/schemas';
 import CardWrapper from '@/components/auth/card-wrapper';
 import {
   Form,
@@ -18,38 +18,27 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { login } from '@/actions/login';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { ROUTE_AUTH_REGISTER, ROUTE_AUTH_RESET } from '@/lib/getEnv';
+import { reset } from '@/actions/reset';
+import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
-const LoginForm = () => {
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+const ResetForm = () => {
+  const form = useForm<z.infer<typeof ResetSchema>>({
+    resolver: zodResolver(ResetSchema),
     defaultValues: {
       email: '',
-      password: '',
     },
   });
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
 
-  const searchParams = useSearchParams();
-
-  // https://authjs.dev/concepts/faq
-  // When I sign in with another account with the same email address, why are accounts not linked automatically?
-  const urlError =
-    searchParams?.get('error') === 'OAuthAccountNotLinked'
-      ? '该邮件已经注册过！'
-      : '';
-
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
     // console.log(values);
     setError('');
     setSuccess('');
+
     startTransition(() => {
-      login(values).then(data => {
+      reset(values).then(data => {
         if (!data) {
           return;
         }
@@ -57,16 +46,15 @@ const LoginForm = () => {
         type === 'error' ? setError(message) : setSuccess(message);
       });
 
-      // TODO: 2FA
+      //
     });
   };
 
   return (
     <CardWrapper
-      headerLabel='欢迎回来'
-      backButtonLabel='没有账号？'
-      backButtonHref={ROUTE_AUTH_REGISTER}
-      showSocial
+      headerLabel='忘记密码？'
+      backButtonLabel='返回登录'
+      backButtonHref={ROUTE_AUTH_LOGIN}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -89,34 +77,12 @@ const LoginForm = () => {
                 </FormItem>
               )}
             ></FormField>
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>密码</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      // placeholder='******'
-                      type='password'
-                      disabled={isPending}
-                    ></Input>
-                  </FormControl>
-                  <FormMessage></FormMessage>
-                  {/*  */}
-                  <Button size='sm' variant='link' asChild>
-                    <Link href={ROUTE_AUTH_RESET}>忘记密码？</Link>
-                  </Button>
-                </FormItem>
-              )}
-            ></FormField>
           </div>
           {/*  */}
-          <FormError message={error || urlError}></FormError>
+          <FormError message={error}></FormError>
           <FormSuccess message={success}></FormSuccess>
           <Button type='submit' className='w-full' disabled={isPending}>
-            登录
+            发送重置密码邮件
           </Button>
         </form>
       </Form>
@@ -124,4 +90,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default ResetForm;

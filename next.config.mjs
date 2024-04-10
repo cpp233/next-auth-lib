@@ -6,6 +6,7 @@ const nextConfig = {
     ROUTE_AUTH_ERROR: '/auth/error',
     ROUTE_AUTH_NEW_VERIFICATION: '/auth/new-verification',
     ROUTE_AUTH_RESET: '/auth/reset',
+    ROUTE_AUTH_NEW_PASSWORK: '/auth/new-password',
   },
 };
 

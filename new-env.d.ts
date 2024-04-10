@@ -14,5 +14,6 @@ declare module NodeJS {
     ROUTE_AUTH_ERROR: string;
     ROUTE_AUTH_NEW_VERIFICATION: string;
     ROUTE_AUTH_RESET: string;
+    ROUTE_AUTH_NEW_PASSWORK: string;
   }
 }
