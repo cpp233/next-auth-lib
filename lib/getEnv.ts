@@ -12,7 +12,7 @@ const ROUTE_AUTH_RESET = process.env.ROUTE_AUTH_RESET;
 const ROUTE_AUTH_NEW_PASSWORK = process.env.ROUTE_AUTH_NEW_PASSWORK;
 
 const NEXT_PUBLIC_APP_URL = process.env.NEXT_PUBLIC_APP_URL;
-const DEV_NOT_SEND_MAIL = process.env.DEV_NOT_SEND_MAIL;
+const DEV_NOT_SEND_MAIL = process.env.DEV_NOT_SEND_MAIL || false;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Acme <onboarding@resend.dev>';
 
 export {
