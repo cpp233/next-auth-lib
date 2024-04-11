@@ -12,6 +12,7 @@ const ROUTE_AUTH_RESET = process.env.ROUTE_AUTH_RESET;
 const ROUTE_AUTH_NEW_PASSWORK = process.env.ROUTE_AUTH_NEW_PASSWORK;
 
 const NEXT_PUBLIC_APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+const DEV_NOT_SEND_MAIL = process.env.DEV_NOT_SEND_MAIL;
 
 export {
   GITHUB_CLIENT_ID,
@@ -28,4 +29,6 @@ export {
   ROUTE_AUTH_NEW_PASSWORK,
   //
   NEXT_PUBLIC_APP_URL,
+  //
+  DEV_NOT_SEND_MAIL,
 };

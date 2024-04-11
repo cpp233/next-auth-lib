@@ -40,10 +40,10 @@ export const settings = async (
       return { type: 'error', message: '该邮箱已被注册' };
     }
     const verificationToken = await generateVerificationToken(values.email);
-    // await sendVerificationEmail(
-    //   verificationToken.email,
-    //   verificationToken.token
-    // );
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
     return { type: 'success', message: '验证邮件已发送' };
   }
 

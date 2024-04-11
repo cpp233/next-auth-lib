@@ -42,10 +42,10 @@ export const login = async (
     const verificationToken = await generateVerificationToken(
       existingUser.email
     );
-    // await sendVerificationEmail(
-    //   verificationToken.email,
-    //   verificationToken.token
-    // );
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
 
     return { type: 'success', message: '邮件已发送，请在您的邮箱验证确认邮件' };
   }
@@ -54,7 +54,7 @@ export const login = async (
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (!code2FA) {
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
-      // await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
+      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
       return {
         type: '2FA',

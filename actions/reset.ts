@@ -25,10 +25,10 @@ export const reset = async (
   }
 
   const passwordResetToken = await generatePasswordResetToken(email);
-  // await sendPasswordResetEmail(
-  //   passwordResetToken.email,
-  //   passwordResetToken.token
-  // );
+  await sendPasswordResetEmail(
+    passwordResetToken.email,
+    passwordResetToken.token
+  );
 
   return { type: 'success', message: '邮件已发送' };
 };
