@@ -13,6 +13,7 @@ const ROUTE_AUTH_NEW_PASSWORK = process.env.ROUTE_AUTH_NEW_PASSWORK;
 
 const NEXT_PUBLIC_APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const DEV_NOT_SEND_MAIL = process.env.DEV_NOT_SEND_MAIL;
+const FROM_EMAIL = process.env.FROM_EMAIL || 'Acme <onboarding@resend.dev>';
 
 export {
   GITHUB_CLIENT_ID,
@@ -31,4 +32,6 @@ export {
   NEXT_PUBLIC_APP_URL,
   //
   DEV_NOT_SEND_MAIL,
+  //
+  FROM_EMAIL,
 };

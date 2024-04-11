@@ -5,6 +5,7 @@ import {
   ROUTE_AUTH_NEW_PASSWORK,
   NEXT_PUBLIC_APP_URL,
   DEV_NOT_SEND_MAIL,
+  FROM_EMAIL,
 } from '@/lib/getEnv';
 import { EmailTemplate } from './EmailTemplate';
 
@@ -19,7 +20,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${NEXT_PUBLIC_APP_URL}${ROUTE_AUTH_NEW_VERIFICATION}?token=${token}`;
 
   await resend.emails.send({
-    from: 'Acme <onboarding@resend.dev>',
+    from: FROM_EMAIL,
     to: email,
     subject: title,
     // html: `<p>点击<a href="${confirmLink}">这里</a>验证你的邮箱。</p>
@@ -38,7 +39,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${NEXT_PUBLIC_APP_URL}${ROUTE_AUTH_NEW_PASSWORK}?token=${token}`;
 
   await resend.emails.send({
-    from: 'Acme <onboarding@resend.dev>',
+    from: FROM_EMAIL,
     to: email,
     subject: title,
     // html: `<p>点击<a href="${resetLink}">这里</a>重置你的密码。</p>
@@ -54,7 +55,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   }
 
   await resend.emails.send({
-    from: 'Acme <onboarding@resend.dev>',
+    from: FROM_EMAIL,
     to: email,
     subject: '2FA 验证码',
     html: `<p>您的 2FA 验证码为： ${token} 。</p>`,
