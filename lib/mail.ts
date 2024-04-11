@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import {
   ROUTE_AUTH_NEW_VERIFICATION,
   ROUTE_AUTH_NEW_PASSWORK,
+  NEXT_PUBLIC_APP_URL,
 } from '@/lib/getEnv';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -15,7 +16,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // );
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `http://localhost:${process.env.PORT}${ROUTE_AUTH_NEW_VERIFICATION}?token=${token}`;
+  const confirmLink = `${NEXT_PUBLIC_APP_URL}${ROUTE_AUTH_NEW_VERIFICATION}?token=${token}`;
 
   await resend.emails.send({
     from: 'Acme <onboarding@resend.dev>',
@@ -27,7 +28,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetLink = `http://localhost:${process.env.PORT}${ROUTE_AUTH_NEW_PASSWORK}?token=${token}`;
+  const resetLink = `${NEXT_PUBLIC_APP_URL}${ROUTE_AUTH_NEW_PASSWORK}?token=${token}`;
 
   await resend.emails.send({
     from: 'Acme <onboarding@resend.dev>',
