@@ -61,6 +61,11 @@ export const settings = async (
     values.newPassword = undefined;
   }
 
+  // 如果只有密码，而无新密码，是浏览器自动填充。
+  if (values.password && !values.newPassword) {
+    values.password = undefined;
+  }
+
   await db.user.update({
     where: { id: dbUser.id },
     data: {
