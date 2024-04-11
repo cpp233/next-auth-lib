@@ -33,6 +33,11 @@ export const register = async (
     };
   }
 
+  // 生成验证，用户验证后可登录
+  const verificationToken = await generateVerificationToken(email);
+
+  await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
   // 创建用户，但是待验证
   await db.user.create({
     data: {
@@ -41,11 +46,6 @@ export const register = async (
       password: hashedPassword,
     },
   });
-
-  // 生成验证，用户验证后可登录
-  const verificationToken = await generateVerificationToken(email);
-
-  await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
   return {
     type: 'success',
