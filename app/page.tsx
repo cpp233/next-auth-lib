@@ -21,9 +21,9 @@ export default function Home() {
           🔐 Auth
         </h1>
         <p className='text-white text-lg'>权限认证</p>
-        <LoginButton>
+        <LoginButton mode='modal' asChild>
           <Button variant='secondary' size='lg'>
-            登陆
+            开始体验
           </Button>
         </LoginButton>
       </div>

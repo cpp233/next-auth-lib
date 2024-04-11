@@ -23,7 +23,11 @@ import { FormSuccess } from '@/components/form-success';
 import { login } from '@/actions/login';
 import { ROUTE_AUTH_REGISTER, ROUTE_AUTH_RESET } from '@/lib/getEnv';
 
-const LoginForm = () => {
+interface LoginFormProps {
+  mode?: 'modal' | 'redirect';
+}
+
+const LoginForm = ({ mode }: LoginFormProps) => {
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -86,6 +90,7 @@ const LoginForm = () => {
       backButtonLabel='没有账号？'
       backButtonHref={ROUTE_AUTH_REGISTER}
       showSocial
+      modal={mode === 'modal' ? true : false}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>

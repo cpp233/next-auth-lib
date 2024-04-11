@@ -9,6 +9,7 @@ import {
 import Header from './header';
 import { Social } from './social';
 import { BackButton } from './back-button';
+import { cn } from '@/lib/utils';
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ interface CardWrapperProps {
   backButtonLabel: string;
   backButtonHref: string;
   showSocial?: boolean;
+  modal?: boolean;
 }
 
 const CardWrapper = ({
@@ -24,9 +26,15 @@ const CardWrapper = ({
   backButtonLabel,
   backButtonHref,
   showSocial = false,
+  modal = false,
 }: CardWrapperProps) => {
   return (
-    <Card className='w-11/12 max-w-2xl lg:w-2/4 2xl:w-1/4 shadow-md'>
+    <Card
+      className={cn(
+        'shadow-md',
+        modal ? '' : 'w-11/12 max-w-2xl lg:w-2/4 2xl:w-1/4'
+      )}
+    >
       <CardHeader>
         <Header label={headerLabel}></Header>
       </CardHeader>
