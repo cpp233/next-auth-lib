@@ -33,7 +33,16 @@ export default auth(req => {
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL(ROUTE_AUTH_LOGIN, nextUrl));
+    // 记住登录之前访问过的 url;
+    let callBackUrl = nextUrl.pathname;
+    if (nextUrl.search) {
+      callBackUrl += nextUrl.search;
+    }
+    const encodeCallBackUrl = encodeURIComponent(callBackUrl);
+
+    return Response.redirect(
+      new URL(`${ROUTE_AUTH_LOGIN}?callbackUrl=${encodeCallBackUrl}`, nextUrl)
+    );
   }
 
   // console.log('[Middleware] pathname:', req.nextUrl.pathname);

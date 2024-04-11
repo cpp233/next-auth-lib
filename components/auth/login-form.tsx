@@ -50,12 +50,15 @@ const LoginForm = ({ mode }: LoginFormProps) => {
       ? '该邮件已经注册过！'
       : '';
 
+  // 获取是否含登陆前 url 信息
+  const callbackUrl = searchParams?.get('callbackUrl');
+
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     // console.log(values);
     setError('');
     setSuccess('');
     startTransition(() => {
-      login(values)
+      login(values, callbackUrl)
         .then(data => {
           if (!data) {
             return;
