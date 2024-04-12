@@ -7,7 +7,10 @@ import bcrypt from 'bcryptjs';
 import { RegisterSchema } from '@/schemas';
 import { db } from '@/lib/db';
 import { getUserByEmail } from '@/data/user';
-import { generateVerificationToken } from '@/lib/tokens';
+import {
+  TOKEN_LIMIT_IN_MINUTES,
+  generateVerificationToken,
+} from '@/lib/tokens';
 import { sendVerificationEmail } from '@/lib/mail';
 
 export const register = async (
@@ -38,7 +41,9 @@ export const register = async (
   if (!isNew) {
     return {
       type: 'too_frequent',
-      message: `${verificationToken.createdAt.getTime() + 60 * 1000}`,
+      message: `${
+        verificationToken.createdAt.getTime() + TOKEN_LIMIT_IN_MINUTES
+      }`,
     };
   }
 

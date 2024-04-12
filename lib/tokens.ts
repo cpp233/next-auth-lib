@@ -6,6 +6,8 @@ import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
 
 // 有效时长
 const TOKEN_EXPIRES_IN_MINUTES = 5;
+// 发送间隔
+export const TOKEN_LIMIT_IN_MINUTES = 60 * 1000;
 
 export const generateVerificationToken = async (email: string) => {
   const token = crypto.randomUUID();
@@ -20,7 +22,7 @@ export const generateVerificationToken = async (email: string) => {
     const currentTime = new Date().getTime();
     const distance = currentTime - createdTime;
 
-    if (distance < 60 * 1000) {
+    if (distance < TOKEN_LIMIT_IN_MINUTES) {
       return {
         isNew: false,
         token: existingToken,
@@ -57,6 +59,17 @@ export const generatePasswordResetToken = async (email: string) => {
   const existingToken = await getPasswordResetTokenByEmail(email);
 
   if (existingToken) {
+    const createdTime = new Date(existingToken.createdAt).getTime();
+    const currentTime = new Date().getTime();
+    const distance = currentTime - createdTime;
+
+    if (distance < TOKEN_LIMIT_IN_MINUTES) {
+      return {
+        isNew: false,
+        token: existingToken,
+      };
+    }
+
     await db.passwordResetToken.delete({
       where: {
         id: existingToken.id,
@@ -72,7 +85,10 @@ export const generatePasswordResetToken = async (email: string) => {
     },
   });
 
-  return passwordResetToken;
+  return {
+    isNew: true,
+    token: passwordResetToken,
+  };
 };
 
 export const generateTwoFactorToken = async (email: string) => {

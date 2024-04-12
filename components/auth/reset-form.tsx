@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import CountdownButton from '@/components/countdown-button';
 import { reset } from '@/actions/reset';
 import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
@@ -28,9 +29,11 @@ const ResetForm = () => {
       email: '',
     },
   });
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
+  const [countdown, setCountdown] = useState<number>(0);
 
   const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
     // console.log(values);
@@ -43,7 +46,29 @@ const ResetForm = () => {
           return;
         }
         const { type, message } = data;
-        type === 'error' ? setError(message) : setSuccess(message);
+
+        switch (type) {
+          case 'error':
+            // form.reset();
+            setError(message);
+            break;
+          case 'success':
+            // form.reset();
+            setSuccess(message);
+            break;
+          case 'too_frequent':
+            // form.reset();
+            const now = new Date().getTime();
+            const distance = Number(message) - now;
+            setError('验证邮件已发送，请稍后再试！');
+            setCountdown(distance);
+            break;
+
+          default:
+            setError('未知错误，请联系管理员！');
+            break;
+        }
+        //
       });
 
       //
@@ -81,9 +106,17 @@ const ResetForm = () => {
           {/*  */}
           <FormError message={error}></FormError>
           <FormSuccess message={success}></FormSuccess>
-          <Button type='submit' className='w-full' disabled={isPending}>
+          {/* <Button type='submit' className='w-full' disabled={isPending}>
             发送重置密码邮件
-          </Button>
+          </Button> */}
+          <CountdownButton
+            type='submit'
+            className='w-full'
+            disabled={isPending}
+            millisecond={countdown}
+          >
+            发送重置密码邮件
+          </CountdownButton>
         </form>
       </Form>
     </CardWrapper>

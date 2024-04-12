@@ -6,7 +6,10 @@ import { getUserByEmail, getUserById } from '@/data/user';
 import { curUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { sendVerificationEmail } from '@/lib/mail';
-import { generateVerificationToken } from '@/lib/tokens';
+import {
+  TOKEN_LIMIT_IN_MINUTES,
+  generateVerificationToken,
+} from '@/lib/tokens';
 import { SettingsSchema } from '@/schemas';
 
 export const settings = async (
@@ -45,7 +48,9 @@ export const settings = async (
     if (!isNew) {
       return {
         type: 'too_frequent',
-        message: `${verificationToken.createdAt.getTime() + 60 * 1000}`,
+        message: `${
+          verificationToken.createdAt.getTime() + TOKEN_LIMIT_IN_MINUTES
+        }`,
       };
     }
 

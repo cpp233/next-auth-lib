@@ -4,18 +4,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { AuthError } from 'next-auth';
 
+import { db } from '@/lib/db';
 import { LoginSchema } from '@/schemas';
 import { signIn } from '@/auth';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { getUserByEmail } from '@/data/user';
 import {
+  TOKEN_LIMIT_IN_MINUTES,
   generateVerificationToken,
   generateTwoFactorToken,
 } from '@/lib/tokens';
-import { sendVerificationEmail, sendTwoFactorTokenEmail } from '@/lib/mail';
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
-import { db } from '@/lib/db';
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
+import { sendVerificationEmail, sendTwoFactorTokenEmail } from '@/lib/mail';
 
 export const login = async (
   values: z.infer<typeof LoginSchema>,
@@ -48,7 +49,9 @@ export const login = async (
     if (!isNew) {
       return {
         type: 'too_frequent',
-        message: `${verificationToken.createdAt.getTime() + 60 * 1000}`,
+        message: `${
+          verificationToken.createdAt.getTime() + TOKEN_LIMIT_IN_MINUTES
+        }`,
       };
     }
 
