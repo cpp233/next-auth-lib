@@ -12,7 +12,7 @@ import { sendVerificationEmail } from '@/lib/mail';
 
 export const register = async (
   values: z.infer<typeof RegisterSchema>
-): Promise<{ type: 'success' | 'error'; message: string }> => {
+): Promise<{ type: 'success' | 'error' | 'too_frequent'; message: string }> => {
   // console.log(values);
   const validationSchema = RegisterSchema.safeParse(values);
 
@@ -21,12 +21,10 @@ export const register = async (
   }
 
   const { name, email, password } = validationSchema.data;
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
-    // TODO: 倒计时
     return {
       type: 'error',
       message: '该邮箱已注册',
@@ -34,11 +32,20 @@ export const register = async (
   }
 
   // 生成验证，用户验证后可登录
-  const verificationToken = await generateVerificationToken(email);
+  const data = await generateVerificationToken(email);
+
+  const { isNew, token: verificationToken } = data;
+  if (!isNew) {
+    return {
+      type: 'too_frequent',
+      message: `${verificationToken.createdAt.getTime() + 60 * 1000}`,
+    };
+  }
 
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
   // 创建用户，但是待验证
+  const hashedPassword = await bcrypt.hash(password, 10);
   await db.user.create({
     data: {
       name,
@@ -49,6 +56,6 @@ export const register = async (
 
   return {
     type: 'success',
-    message: '邮件已发送',
+    message: '邮件已发送，请到邮箱中查看',
   };
 };

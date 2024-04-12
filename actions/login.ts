@@ -20,7 +20,10 @@ import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation
 export const login = async (
   values: z.infer<typeof LoginSchema>,
   callbackUrl?: string | null
-): Promise<{ type: 'success' | 'error' | '2FA'; message: string }> => {
+): Promise<{
+  type: 'success' | 'error' | '2FA' | 'too_frequent';
+  message: string;
+}> => {
   // console.log(values);
   const validationSchema = LoginSchema.safeParse(values);
 
@@ -32,16 +35,23 @@ export const login = async (
 
   const existingUser = await getUserByEmail(email);
 
+  // 如果没有密码，说明是 OAuth 用户，禁止密码登陆。
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { type: 'error', message: '无效用户' };
   }
 
-  // 邮件验证
-  // 这里也加一个邮件验证判定，防止失效。
+  // 如果登录用户，没有经过邮件验证，再次发送验证码。
   if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email
-    );
+    const data = await generateVerificationToken(existingUser.email);
+
+    const { isNew, token: verificationToken } = data;
+    if (!isNew) {
+      return {
+        type: 'too_frequent',
+        message: `${verificationToken.createdAt.getTime() + 60 * 1000}`,
+      };
+    }
+
     await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token

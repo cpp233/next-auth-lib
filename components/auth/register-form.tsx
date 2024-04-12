@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import CountdownButton from '@/components/countdown-button';
 import { register } from '@/actions/register';
 import { ROUTE_AUTH_LOGIN } from '@/lib/getEnv';
 
@@ -30,9 +31,11 @@ const RegisterForm = () => {
       name: '',
     },
   });
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
+  const [countdown, setCountdown] = useState<number>(0);
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     // console.log(values);
@@ -41,7 +44,29 @@ const RegisterForm = () => {
     startTransition(() => {
       register(values).then(data => {
         const { type, message } = data;
-        type === 'error' ? setError(message) : setSuccess(message);
+
+        switch (type) {
+          case 'error':
+            setError(message);
+            break;
+          case 'success':
+            setSuccess(message);
+            break;
+          case 'success':
+            setSuccess(message);
+            break;
+          case 'too_frequent':
+            const now = new Date().getTime();
+            const distance = Number(message) - now;
+            setError('验证邮件已发送，请稍后再试！');
+            setCountdown(distance);
+            break;
+
+          default:
+            setError('未知错误，请联系管理员！');
+            break;
+        }
+        //
       });
     });
   };
@@ -83,7 +108,7 @@ const RegisterForm = () => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder='test@exaple.com'
+                      placeholder='请输入邮箱'
                       type='email'
                       disabled={isPending}
                     ></Input>
@@ -114,9 +139,17 @@ const RegisterForm = () => {
           {/*  */}
           <FormError message={error}></FormError>
           <FormSuccess message={success}></FormSuccess>
-          <Button type='submit' className='w-full' disabled={isPending}>
+          {/* <Button type='submit' className='w-full' disabled={isPending}>
             创建账号
-          </Button>
+          </Button> */}
+          <CountdownButton
+            type='submit'
+            className='w-full'
+            disabled={isPending}
+            millisecond={countdown}
+          >
+            创建账号
+          </CountdownButton>
         </form>
       </Form>
     </CardWrapper>

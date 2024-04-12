@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import CountdownButton from '@/components/countdown-button';
 import { login } from '@/actions/login';
 import { ROUTE_AUTH_REGISTER, ROUTE_AUTH_RESET } from '@/lib/getEnv';
 
@@ -36,10 +37,12 @@ const LoginForm = ({ mode }: LoginFormProps) => {
       code2FA: '',
     },
   });
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
   const [show2FA, setShow2FA] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number>(0);
 
   const searchParams = useSearchParams();
 
@@ -57,6 +60,8 @@ const LoginForm = ({ mode }: LoginFormProps) => {
     // console.log(values);
     setError('');
     setSuccess('');
+    setCountdown(0);
+
     startTransition(() => {
       login(values, callbackUrl)
         .then(data => {
@@ -64,22 +69,34 @@ const LoginForm = ({ mode }: LoginFormProps) => {
             return;
           }
           const { type, message } = data;
-          // type === 'error' ?  : setSuccess(message);
 
-          if (type === 'error') {
-            form.reset();
-            setError(message);
+          switch (type) {
+            case 'error':
+              // form.reset();
+              setError(message);
+              break;
+            case 'success':
+              // form.reset();
+              setSuccess(message);
+              break;
+            case '2FA':
+              // form.reset();
+              setShow2FA(true);
+              break;
+            case 'too_frequent':
+              // form.reset();
+              const now = new Date().getTime();
+              const distance = Number(message) - now;
+              setError('验证邮件已发送，请稍后再试！');
+              setCountdown(distance);
+              break;
+
+            default:
+              setError('未知错误，请联系管理员！');
+              break;
           }
 
-          if (type === 'success') {
-            form.reset();
-            setSuccess(message);
-          }
-
-          // 2FA
-          if (type === '2FA') {
-            setShow2FA(true);
-          }
+          //
         })
         .catch(err => {
           setError('登录失败，请稍后再试！');
@@ -109,7 +126,7 @@ const LoginForm = ({ mode }: LoginFormProps) => {
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder='test@exaple.com'
+                          placeholder='请输入邮箱'
                           type='email'
                           disabled={isPending}
                         ></Input>
@@ -166,9 +183,17 @@ const LoginForm = ({ mode }: LoginFormProps) => {
           {/*  */}
           <FormError message={error || urlError}></FormError>
           <FormSuccess message={success}></FormSuccess>
-          <Button type='submit' className='w-full' disabled={isPending}>
+          {/* <Button type='submit' className='w-full' disabled={isPending}>
             {show2FA ? '验证' : '登录'}
-          </Button>
+          </Button> */}
+          <CountdownButton
+            type='submit'
+            className='w-full'
+            disabled={isPending}
+            millisecond={countdown}
+          >
+            {show2FA ? '验证' : '登录'}
+          </CountdownButton>
         </form>
       </Form>
     </CardWrapper>

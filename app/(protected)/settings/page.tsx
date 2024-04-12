@@ -30,15 +30,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { UserRole } from '@prisma/client';
+import CountdownButton from '@/components/countdown-button';
 import { Switch } from '@/components/ui/switch';
+import { UserRole } from '@prisma/client';
 
 const SettingsPage = () => {
   const { update } = useSession();
+  const user = useCurUser();
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>('');
   const [success, setSuccess] = useState<string | undefined>('');
-  const user = useCurUser();
+  const [countdown, setCountdown] = useState<number>(0);
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
@@ -61,14 +64,31 @@ const SettingsPage = () => {
       settings(values)
         .then(data => {
           const { type, message } = data;
-          if (type === 'success') {
-            update(); // 更新会话信息
-            setSuccess(message); // 设置成功消息
+
+          switch (type) {
+            case 'error':
+              // form.reset();
+              setError(message);
+              break;
+            case 'success':
+              // form.reset();
+              update(); // 更新会话信息
+              setSuccess(message); // 设置成功消息
+              break;
+            case 'too_frequent':
+              // form.reset();
+              const now = new Date().getTime();
+              const distance = Number(message) - now;
+              setError('验证邮件已发送，请稍后再试！');
+              setCountdown(distance);
+              break;
+
+            default:
+              setError('未知错误，请联系管理员！');
+              break;
           }
 
-          if (type === 'error') {
-            setError(message); // 设置错误消息
-          }
+          //
         })
         .catch(error => {
           setError(error);
@@ -216,9 +236,17 @@ const SettingsPage = () => {
             <FormSuccess message={success}></FormSuccess>
             <FormError message={error}></FormError>
             {/*  */}
-            <Button type='submit' disabled={isPending}>
+            {/* <Button type='submit' disabled={isPending}>
               修改
-            </Button>
+            </Button> */}
+
+            <CountdownButton
+              type='submit'
+              disabled={isPending}
+              millisecond={countdown}
+            >
+              修改设置
+            </CountdownButton>
           </form>
         </Form>
       </CardContent>

@@ -11,7 +11,7 @@ import { SettingsSchema } from '@/schemas';
 
 export const settings = async (
   values: z.infer<typeof SettingsSchema>
-): Promise<{ type: 'success' | 'error'; message: string }> => {
+): Promise<{ type: 'success' | 'error' | 'too_frequent'; message: string }> => {
   const user = await curUser();
 
   if (!user || !user.id) {
@@ -39,7 +39,16 @@ export const settings = async (
     if (existingUser && existingUser.id !== user.id) {
       return { type: 'error', message: '该邮箱已被注册' };
     }
-    const verificationToken = await generateVerificationToken(values.email);
+    const data = await generateVerificationToken(values.email);
+
+    const { isNew, token: verificationToken } = data;
+    if (!isNew) {
+      return {
+        type: 'too_frequent',
+        message: `${verificationToken.createdAt.getTime() + 60 * 1000}`,
+      };
+    }
+
     await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token
