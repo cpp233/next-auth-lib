@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 技术栈
 
-## Getting Started
+- next
+- next-auth
+- tailwindcss
+- shadcn-ui
+- prisma
+- zod
+- react-hook-form
 
-First, run the development server:
+## 功能一览
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🔐 Next-auth v5 (Auth.js)
+- 📧 邮件注册
+- 📬 注册邮件验证
+- 🌍 OAuth 注册 (Google/GitHub 通过 Provider 可扩展更多)
+- 🗝️ 邮箱密码登录
+- 🛡️ 忘记密码
+- 🔒 2FA 登录保护
+- 📱 响应式布局
+- 🖥️ 通过 server component 获取登陆状态
+- 💻 通过 client component 获取登陆状态
+- 🗝️ 登陆 component
+- 📝 注册 component
+- 🤔 忘记密码 component
+- ✅ 邮件验证 component
+- ⚙️ 设置 component
+  - 💌 更改邮箱
+  - 🔑 更改密码
+  - 🔔 开/关 2FA
+- 🔍 扩展 next.js middleware
+- 📈 扩展 next-auth session
+- 🔄 扩展 next-auth callbacks
+- 🚦 获取验证码限制请求数
+- 🕰️ 限制时间内倒计时
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 环境变量
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+| 变量名               | 备注                                                                         | 示例                                                   |
+| -------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------ |
+| DATABASE_URL         | postgresql 数据库地址                                                        | postgresql://user:password@xxx.com/xxx?sslmode=require |
+| GITHUB_CLIENT_ID     | Github OAuth                                                                 |                                                        |
+| GITHUB_CLIENT_SECRET | Github OAuth                                                                 |                                                        |
+| GOOGLE_CLIENT_ID     | Google OAuth                                                                 |                                                        |
+| GOOGLE_CLIENT_SECRET | Google OAuth                                                                 |                                                        |
+| RESEND_API_KEY       | resend 邮件验证 APi                                                          |                                                        |
+| NEXT_PUBLIC_APP_URL  | 域名，邮件验证用                                                             | http://localhost:3001                                  |
+| AUTH_SECRET          | [generate-secret.vercel.app](https://generate-secret.vercel.app/32) 在线生成 | 264787eff676bdab14a3bb3bdfb7861b                       |
+| FROM_EMAIL           | 发件人，需通过域名验证才能发给其他邮件地址                                   | "Auth <notifications@email.xxx.com>"                   |
+| DEV_NOT_SEND_MAIL    | （可选），有此变量则不发送邮件，开发模式调试用                               |
