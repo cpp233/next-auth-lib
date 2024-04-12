@@ -82,6 +82,7 @@ const LoginForm = ({ mode }: LoginFormProps) => {
             case '2FA':
               // form.reset();
               setShow2FA(true);
+              setSuccess(message);
               break;
             case 'too_frequent':
               // form.reset();

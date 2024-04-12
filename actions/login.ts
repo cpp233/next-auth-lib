@@ -66,7 +66,16 @@ export const login = async (
   // 2FA 验证
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (!code2FA) {
-      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+      const data = await generateTwoFactorToken(existingUser.email);
+
+      const { isNew, token: twoFactorToken } = data;
+      if (!isNew) {
+        return {
+          type: '2FA',
+          message: `每分钟只能生成一份 2FA 验证码，请在您的邮箱查看 2FA 验证码`,
+        };
+      }
+
       await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
       return {

@@ -101,6 +101,17 @@ export const generateTwoFactorToken = async (email: string) => {
   const existingToken = await getTwoFactorTokenByEmail(email);
 
   if (existingToken) {
+    const createdTime = new Date(existingToken.createdAt).getTime();
+    const currentTime = new Date().getTime();
+    const distance = currentTime - createdTime;
+
+    if (distance < TOKEN_LIMIT_IN_MINUTES) {
+      return {
+        isNew: false,
+        token: existingToken,
+      };
+    }
+
     await db.twoFactorToken.delete({
       where: {
         id: existingToken.id,
@@ -116,5 +127,8 @@ export const generateTwoFactorToken = async (email: string) => {
     },
   });
 
-  return twoFactorToken;
+  return {
+    isNew: true,
+    token: twoFactorToken,
+  };
 };
