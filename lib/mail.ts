@@ -58,6 +58,6 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     from: FROM_EMAIL,
     to: email,
     subject: '2FA 验证码',
-    html: `<p>您的 2FA 验证码为： ${token} 。</p>`,
+    html: `<p>您的 2FA 验证码为：${token}</p>`,
   });
 };
